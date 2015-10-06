@@ -1,0 +1,3 @@
+art_jotest_homepage:
+    path:     /hello/{name}
+    defaults: { _controller: ArtJotestBundle:Default:index }
