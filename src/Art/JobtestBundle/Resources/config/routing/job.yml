@@ -1,0 +1,30 @@
+job:
+    path:     /
+    defaults: { _controller: "ArtJobtestBundle:Job:index" }
+
+job_show:
+    path:     /{id}/show
+    defaults: { _controller: "ArtJobtestBundle:Job:show" }
+
+job_new:
+    path:     /new
+    defaults: { _controller: "ArtJobtestBundle:Job:new" }
+
+job_create:
+    path:     /create
+    defaults: { _controller: "ArtJobtestBundle:Job:create" }
+    methods:  POST
+
+job_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "ArtJobtestBundle:Job:edit" }
+
+job_update:
+    path:     /{id}/update
+    defaults: { _controller: "ArtJobtestBundle:Job:update" }
+    methods:  [POST, PUT]
+
+job_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "ArtJobtestBundle:Job:delete" }
+    methods:  [POST, DELETE]

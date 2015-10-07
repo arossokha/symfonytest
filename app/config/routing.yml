@@ -1,5 +1,5 @@
-art_jotest:
-    resource: "@ArtJotestBundle/Resources/config/routing.yml"
+art_jobtest:
+    resource: "@ArtJobtestBundle/Resources/config/routing.yml"
     prefix:   /
 
 app:

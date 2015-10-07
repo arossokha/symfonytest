@@ -1,4 +1,4 @@
 services:
-#    art_jotest.example:
-#        class: Art\JotestBundle\Example
+#    art_jobtest.example:
+#        class: Art\JobtestBundle\Example
 #        arguments: [@service_id, "plain_value", %parameter%]

@@ -1,0 +1,7 @@
+art_jobtest_job:
+    resource: "@ArtJobtestBundle/Resources/config/routing/job.yml"
+    prefix:   /job
+
+art_jobtest_homepage:
+    path:     /hello/{name}
+    defaults: { _controller: ArtJobtestBundle:Default:index }
