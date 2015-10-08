@@ -491,7 +491,7 @@ class Job
         return $this->category;
     }
     /**
-     * @ORM\PrePersist
+     * //@ORM\PrePersist
      */
     public function setCreatedAtValue()
     {
@@ -499,7 +499,7 @@ class Job
     }
 
     /**
-     * @ORM\PreUpdate
+     * //@ORM\PreUpdate
      */
     public function setUpdatedAtValue()
     {
