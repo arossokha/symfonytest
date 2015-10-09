@@ -6,6 +6,12 @@ job_show:
     path:     /{id}/show
     defaults: { _controller: "ArtJobtestBundle:Job:show" }
 
+art_job_show:
+    pattern:  /{company}/{location}/{id}/{position}
+    defaults: { _controller: "ArtJobtestBundle:Job:show" }
+    requirements:
+        id:  \d+
+
 job_new:
     path:     /new
     defaults: { _controller: "ArtJobtestBundle:Job:new" }

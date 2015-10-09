@@ -3,5 +3,9 @@ art_jobtest_job:
     prefix:   /job
 
 art_jobtest_homepage:
+    defaults: { _controller: ArtJobtestBundle:Job:index }
+    pattern : /
+
+art_jobtest_homepage:
     path:     /hello/{name}
     defaults: { _controller: ArtJobtestBundle:Default:index }

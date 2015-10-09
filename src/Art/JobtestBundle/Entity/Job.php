@@ -1,6 +1,7 @@
 <?php
 
 namespace Art\JobtestBundle\Entity;
+use Art\JobtestBundle\Utils\Jobtest;
 
 /**
  * Job
@@ -504,6 +505,21 @@ class Job
     public function setUpdatedAtValue()
     {
         // Add your code here
+    }
+
+    public function getCompanySlug()
+    {
+        return Jobtest::slugify($this->getCompany());
+    }
+ 
+    public function getPositionSlug()
+    {
+        return Jobtest::slugify($this->getPosition());
+    }
+ 
+    public function getLocationSlug()
+    {
+        return Jobtest::slugify($this->getLocation());
     }
 }
 
