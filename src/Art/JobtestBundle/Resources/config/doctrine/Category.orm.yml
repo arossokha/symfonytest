@@ -1,5 +1,6 @@
 Art\JobtestBundle\Entity\Category:
     type: entity
+    repositoryClass: Art\JobtestBundle\Repository\CategoryRepository
     table: category
     id:
         id:

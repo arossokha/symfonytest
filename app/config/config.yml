@@ -78,3 +78,7 @@ swiftmailer:
     username:  "%mailer_user%"
     password:  "%mailer_password%"
     spool:     { type: memory }
+
+# custom params
+parameters:
+    max_jobs_on_homepage: 10

@@ -46,3 +46,7 @@ assetic:
 
 #swiftmailer:
 #    delivery_address: me@example.com
+
+# custom params
+parameters:
+    max_jobs_on_homepage: 10

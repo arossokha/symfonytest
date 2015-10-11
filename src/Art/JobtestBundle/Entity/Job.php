@@ -3,6 +3,7 @@
 namespace Art\JobtestBundle\Entity;
 use Art\JobtestBundle\Utils\Jobtest;
 
+use Doctrine\ORM\Mapping as ORM;
 /**
  * Job
  */
@@ -492,19 +493,21 @@ class Job
         return $this->category;
     }
     /**
-     * //@ORM\PrePersist
+     * @ORM\PrePersist
      */
     public function setCreatedAtValue()
     {
-        // Add your code here
+        if(!$this->getCreatedAt()) {
+            $this->setCreatedAt();
+        }
     }
 
     /**
-     * //@ORM\PreUpdate
+     * @ORM\PreUpdate
      */
     public function setUpdatedAtValue()
     {
-        // Add your code here
+        $this->setUpdatedAt();
     }
 
     public function getCompanySlug()
@@ -521,5 +524,15 @@ class Job
     {
         return Jobtest::slugify($this->getLocation());
     }
-}
 
+    /**
+     * @ORM\PrePersist
+     */
+    public function setExpiresAtValue()
+    {
+        if(!$this->getExpiresAt()) {
+            $now = $this->getCreatedAt() ? $this->getCreatedAt()->format('U') : time();
+            $this->expires_at = new \DateTime(date('Y-m-d H:i:s', $now + 86400 * 30));
+        }
+    }
+}
