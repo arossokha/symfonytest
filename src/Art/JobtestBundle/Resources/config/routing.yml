@@ -6,6 +6,6 @@ art_jobtest_homepage:
     defaults: { _controller: ArtJobtestBundle:Job:index }
     pattern : /
 
-art_jobtest_homepage:
-    path:     /hello/{name}
-    defaults: { _controller: ArtJobtestBundle:Default:index }
+art_jobtest_category:
+    pattern : /category/{slug}/{page}
+    defaults: { _controller: ArtJobtestBundle:Category:show, page: 1}

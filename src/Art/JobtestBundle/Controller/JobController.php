@@ -38,6 +38,9 @@ class JobController extends Controller
                     // add limit from params
                     $this->container->getParameter('max_jobs_on_homepage')
                     ));
+
+            $category->setMoreJobs($em->getRepository('ArtJobtestBundle:Job')
+                ->countActiveJobs($category->getId()) - $this->container->getParameter('max_jobs_on_homepage'));
         }
 
         return $this->render('ArtJobtestBundle:Job:index.html.twig', array(
@@ -111,7 +114,7 @@ class JobController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('ArtJobtestBundle:Job')->find($id);
+        $entity = $em->getRepository('ArtJobtestBundle:Job')->getActiveJob($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Job entity.');
