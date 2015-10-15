@@ -22,15 +22,21 @@ job_create:
     methods:  POST
 
 job_edit:
-    path:     /{id}/edit
+    path:     /{token}/edit
     defaults: { _controller: "ArtJobtestBundle:Job:edit" }
 
 job_update:
-    path:     /{id}/update
+    path:     /{token}/update
     defaults: { _controller: "ArtJobtestBundle:Job:update" }
     methods:  [POST, PUT]
 
 job_delete:
-    path:     /{id}/delete
+    path:     /{token}/delete
     defaults: { _controller: "ArtJobtestBundle:Job:delete" }
     methods:  [POST, DELETE]
+
+job_preview:
+    pattern:  /{company}/{location}/{token}/{position}
+    defaults: { _controller: "ArtJobtestBundle:Job:preview" }
+    requirements:
+        token:  w+

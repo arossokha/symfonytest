@@ -94,6 +94,10 @@ class Job
      */
     private $category;
 
+    /**
+     * @var File attribute
+     */
+    public $file;
 
     /**
      * Get id
@@ -535,4 +539,107 @@ class Job
             $this->expires_at = new \DateTime(date('Y-m-d H:i:s', $now + 86400 * 30));
         }
     }
+
+    public static function getTypes()
+    {
+        return array('full-time' => 'Full time', 'part-time' => 'Part time', 'freelance' => 'Freelance');
+    }
+ 
+    public static function getTypeValues()
+    {
+        return array_keys(self::getTypes());
+    }
+
+    protected function getUploadDir()
+    {
+        return 'uploads/jobs';
+    }
+ 
+    protected function getUploadRootDir()
+    {
+        /**
+         * @todo : this is fail to use path in such way
+         * find better way to get web folder path
+         */
+        return __DIR__.'/../../../../web/'.$this->getUploadDir();
+    }
+ 
+    public function getWebPath()
+    {
+        return null === $this->logo ? null : $this->getUploadDir().'/'.$this->logo;
+    }
+ 
+    public function getAbsolutePath()
+    {
+        return null === $this->logo ? null : $this->getUploadRootDir().'/'.$this->logo;
+    }
+
+    /**
+     * @ORM\PostPersist
+     */
+    public function upload()
+    {
+        if (null === $this->file) {
+            return;
+        }
+
+        // If there is an error when moving the file, an exception will
+        // be automatically thrown by move(). This will properly prevent
+        // the entity from being persisted to the database on error
+        $this->file->move($this->getUploadRootDir(), $this->logo);
+
+        unset($this->file);
+    }
+
+    /**
+     * @ORM\PostRemove
+     */
+    public function removeUpload()
+    {
+        $file = $this->getAbsolutePath();
+        if(file_exists($file) && is_writable($file)) {
+            @unlink($file);
+        }
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function preUpload()
+    {
+        if (null !== $this->file) {
+            $this->logo = uniqid().'.'.$this->file->guessExtension();
+        }
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function setTokenValue()
+    {
+        if(!$this->getToken()) {
+            $this->token = sha1($this->getEmail().rand(11111, 99999));
+        }
+    }
+
+    public function isExpired()
+    {
+        return $this->getDaysBeforeExpires() < 0;
+    }
+ 
+    public function expiresSoon()
+    {
+        return $this->getDaysBeforeExpires() < 5;
+    }
+ 
+    public function getDaysBeforeExpires()
+    {
+        return ceil(($this->getExpiresAt()->format('U') - time()) / 86400);
+    }
+
+    public function publish()
+    {
+        $this->setIsActivated(true);
+    }
+ 
 }
