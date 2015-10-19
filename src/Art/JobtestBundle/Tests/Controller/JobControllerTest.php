@@ -73,4 +73,67 @@ class JobControllerTest extends WebTestCase {
         $client->followRedirect();
         $this->assertEquals('Art\JobtestBundle\Controller\JobController::previewAction', $client->getRequest()->attributes->get('_controller'));
     }
+
+    public function testDeleteJob()
+    {
+        $client = $this->createJob(array('art_jobtestbundle_job[position]' => 'FOO2'));
+        $crawler = $client->getCrawler();
+        $form = $crawler->selectButton('Delete')->form();
+        $client->submit($form);
+
+        $kernel = static::createKernel();
+        $kernel->boot();
+        $em = $kernel->getContainer()->get('doctrine.orm.entity_manager');
+
+        $query = $em->createQuery('SELECT count(j.id) from ArtJobtestBundle:Job j WHERE j.position = :position');
+        $query->setParameter('position', 'FOO2');
+        $this->assertTrue(0 == $query->getSingleScalarResult());
+    }
+
+    public function createJob($values = array())
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/job/new');
+        $form = $crawler->selectButton('Preview your job')->form(array_merge(array(
+            'art_jobtestbundle_job[company]'      => 'Sensio Labs',
+            'art_jobtestbundle_job[url]'          => 'http://www.sensio.com/',
+            'art_jobtestbundle_job[position]'     => 'Developer',
+            'art_jobtestbundle_job[location]'     => 'Atlanta, USA',
+            'art_jobtestbundle_job[description]'  => 'You will work with symfony to develop websites for our customers.',
+            'art_jobtestbundle_job[how_to_apply]' => 'Send me an email',
+            'art_jobtestbundle_job[email]'        => 'for.a.art_jobtestbundle_job@example.com',
+            'art_jobtestbundle_job[is_public]'    => false,
+        ), $values));
+
+        $client->submit($form);
+        $client->followRedirect();
+
+        return $client;
+    }
+
+    public function testPublishJob()
+    {
+        $position = 'FOO1'.rand(1000,999999).time();
+        $client = $this->createJob(array('art_jobtestbundle_job[position]' => $position));
+        $crawler = $client->getCrawler();
+        $link = $crawler->selectLink('Publish')->link();
+        $urlData = parse_url($link->getUri());
+
+        $crawler = $client->request('GET',$urlData['path']);
+
+        $form = $crawler->selectButton('Update')->form(array(
+            'art_jobtestbundle_job[is_public]'    => true,
+        ));
+
+        $client->submit($form);
+     
+        $kernel = static::createKernel();
+        $kernel->boot();
+        $em = $kernel->getContainer()->get('doctrine.orm.entity_manager');
+     
+        $query = $em->createQuery('SELECT count(j.id) from ArtJobtestBundle:Job j WHERE j.position = :position AND j.is_public = 1');
+        $query->setParameter('position', $position);
+
+        $this->assertTrue(0 < $query->getSingleScalarResult());
+    }
 }

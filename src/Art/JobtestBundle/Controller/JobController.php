@@ -192,7 +192,7 @@ class JobController extends Controller
 
         $deleteForm = $this->createDeleteForm($token);
         $editForm = $this->createEditForm($entity);
-        $editForm->handleRequest($request);
+        $editForm->handleRequest($request)->submit($request);
 
         if ($editForm->isValid()) {
             $em->flush();
