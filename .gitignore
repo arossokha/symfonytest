@@ -9,6 +9,7 @@
 /composer.phar
 /vendor/
 /web/bundles/
+/code_docs/
 
 .idea/*
 *.sublime-*

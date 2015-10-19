@@ -63,10 +63,10 @@ class JobController extends Controller
             $em->persist($entity);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('job_show', array(
+            return $this->redirect($this->generateUrl('job_preview', array(
                 'company' => $entity->getCompanySlug(),
                 'location' => $entity->getLocationSlug(),
-                'id' => $entity->getId(),
+                'token' => $entity->getToken(),
                 'position' => $entity->getPositionSlug()
             )));
         }
@@ -257,6 +257,7 @@ class JobController extends Controller
         }
 
         $deleteForm = $this->createDeleteForm($entity->getToken());
+        $publishForm = $this->createPublishForm($entity->getToken());
 
         return $this->render('ArtJobtestBundle:Job:show.html.twig', array(
             'entity'      => $entity,

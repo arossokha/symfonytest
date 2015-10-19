@@ -39,4 +39,4 @@ job_preview:
     pattern:  /{company}/{location}/{token}/{position}
     defaults: { _controller: "ArtJobtestBundle:Job:preview" }
     requirements:
-        token:  w+
+        token: \w+
