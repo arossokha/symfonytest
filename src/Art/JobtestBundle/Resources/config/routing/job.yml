@@ -40,3 +40,17 @@ job_preview:
     defaults: { _controller: "ArtJobtestBundle:Job:preview" }
     requirements:
         token: \w+
+
+job_publish:
+    pattern:  /{token}/publish
+    defaults: { _controller: "ArtJobtestBundle:Job:publish" }
+    methods : [POST]
+    requirements:
+        token: \w+
+
+job_extend:
+    pattern:  /{token}/extend
+    defaults: { _controller: "ArtJobtestBundle:Job:extend" }
+    methods : [POST]
+    requirements:
+        token: \w+
