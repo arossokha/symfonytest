@@ -90,7 +90,7 @@ class JobControllerTest extends WebTestCase {
         $this->assertTrue(0 == $query->getSingleScalarResult());
     }
 
-    public function createJob($values = array())
+    public function createJob($values = array(),$publish = false)
     {
         $client = static::createClient();
         $crawler = $client->request('GET', '/job/new');
@@ -108,12 +108,52 @@ class JobControllerTest extends WebTestCase {
         $client->submit($form);
         $client->followRedirect();
 
+        if($publish) {
+            $crawler = $client->getCrawler();
+            $link = $crawler->selectLink('Publish')->link();
+            $urlData = parse_url($link->getUri());
+
+            $crawler = $client->request('GET',$urlData['path']);
+
+            $form = $crawler->selectButton('Update')->form(array(
+                'art_jobtestbundle_job[is_public]'    => true,
+            ));
+
+            $client->submit($form);
+            $client->followRedirect();
+        }
+
         return $client;
+    }
+
+    public function getJobByPosition($position)
+    {
+        $kernel = static::createKernel();
+        $kernel->boot();
+        $em = $kernel->getContainer()->get('doctrine.orm.entity_manager');
+     
+        $query = $em->createQuery('SELECT j from ArtJobtestBundle:Job j WHERE j.position = :position');
+        $query->setParameter('position', $position);
+        $query->setMaxResults(1);
+        return $query->getSingleResult();
+    }
+
+    public function testEditJob()
+    {
+        $position = $this->generatePosition();
+        $client = $this->createJob(array('art_jobtestbundle_job[position]' => $position), true);
+        $crawler = $client->getCrawler();
+        $crawler = $client->request('GET', sprintf('/job/%s/edit', $this->getJobByPosition($position)->getToken()));
+        $this->assertTrue(404 === $client->getResponse()->getStatusCode());
+    }
+
+    protected function generatePosition(){
+        return 'FOO1'.rand(1000,999999).time();
     }
 
     public function testPublishJob()
     {
-        $position = 'FOO1'.rand(1000,999999).time();
+        $position = $this->generatePosition();
         $client = $this->createJob(array('art_jobtestbundle_job[position]' => $position));
         $crawler = $client->getCrawler();
         $link = $crawler->selectLink('Publish')->link();
