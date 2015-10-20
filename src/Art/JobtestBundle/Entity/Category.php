@@ -2,6 +2,8 @@
 
 namespace Art\JobtestBundle\Entity;
 use Art\JobtestBundle\Utils\Jobtest;
+
+use Doctrine\ORM\Mapping as ORM;
 /**
  * Category
  */

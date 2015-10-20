@@ -2,3 +2,20 @@ services:
 #    art_jobtest.example:
 #        class: Art\JobtestBundle\Example
 #        arguments: [@service_id, "plain_value", %parameter%]
+    art.jobtest.admin.category:
+        class: Art\JobtestBundle\Admin\CategoryAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: jobtest, label: Categories }
+        arguments:
+            - ~
+            - Art\JobtestBundle\Entity\Category
+            - 'ArtJobtestBundle:CategoryAdmin'
+
+    art.jobtest.admin.job:
+        class: Art\JobtestBundle\Admin\JobAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: jobtest, label: Jobs }
+        arguments:
+            - ~
+            - Art\JobtestBundle\Entity\Job
+            - 'ArtJobtestBundle:JobAdmin'
