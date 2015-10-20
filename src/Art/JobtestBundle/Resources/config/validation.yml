@@ -1,4 +1,4 @@
-ArtJobtestBundleEntityJob:
+Art\JobtestBundle\Entity\Job:
     properties:
         category:
             - NotBlank: ~
@@ -22,3 +22,8 @@ ArtJobtestBundleEntityJob:
             - Url: ~
         file:
             - Image: ~
+
+Art\JobtestBundle\Entity\Category:
+    properties:
+        name:
+            - NotBlank: ~
