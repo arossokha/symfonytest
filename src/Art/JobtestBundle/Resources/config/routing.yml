@@ -9,3 +9,11 @@ art_jobtest_homepage:
 art_jobtest_category:
     pattern : /category/{slug}/{page}
     defaults: { _controller: ArtJobtestBundle:Category:show, page: 1}
+
+login:
+    pattern:   /login
+    defaults:  { _controller: ArtJobtestBundle:Default:login }
+login_check:
+    pattern:   /login_check
+logout:
+    pattern:   /logout
