@@ -221,6 +221,19 @@ class Affiliate
      */
     public function setCreatedAtValue()
     {
-        // Add your code here
+        if(!$this->getCreatedAt()) {
+            $this->setCreatedAt();
+        }
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function setTokenValue()
+    {
+        if(!$this->getToken()) {
+            $token = sha1($this->getEmail().rand(11111, 99999));
+            $this->token = $token;
+        }
     }
 }

@@ -33,4 +33,4 @@ Art\JobtestBundle\Entity\Affiliate:
                     category_id:
                         referencedColumnName: id
     lifecycleCallbacks:
-        prePersist: [ setCreatedAtValue ]
+            prePersist: [ setCreatedAtValue, setTokenValue ]
