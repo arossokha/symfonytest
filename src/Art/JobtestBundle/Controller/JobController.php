@@ -23,12 +23,6 @@ class JobController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        // $query = $em->createQuery(
-        //     'SELECT j FROM ArtJobtestBundle:Job j WHERE j.expires_at > :date'
-        // )->setParameter('date', date('Y-m-d H:i:s', time()));
-        // $entities = $query->getResult();
-        $entities = $em->getRepository('ArtJobtestBundle:Job')->getActiveJobs();
-
         $categories = $em->getRepository('ArtJobtestBundle:Category')->getWithJobs();
 
         foreach ($categories as $category) {
@@ -43,9 +37,21 @@ class JobController extends Controller
                     ->countActiveJobs($category->getId()) - $this->container->getParameter('max_jobs_on_homepage'));
         }
 
-        return $this->render('ArtJobtestBundle:Job:index.html.twig', array(
-            // 'entities' => $entities,
-            'categories' => $categories
+        $latestJob = $em->getRepository('ArtJobtestBundle:Job')->getLatestPost();
+
+        if($latestJob) {
+            $lastUpdated = $latestJob->getCreatedAt()->format(DATE_ATOM);
+        } else {
+            $lastUpdated = new \DateTime();
+            $lastUpdated = $lastUpdated->format(DATE_ATOM);
+        }
+
+        $format = $this->getRequest()->getRequestFormat();
+
+        return $this->render('ArtJobtestBundle:Job:index.'.$format.'.twig', array(
+            'categories' => $categories,
+            'lastUpdated' => $lastUpdated,
+            'feedId' => sha1($this->get('router')->generate('job',['_format' => 'atom'],true)),
         ));
     }
 

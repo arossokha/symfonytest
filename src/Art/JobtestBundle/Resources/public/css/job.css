@@ -55,7 +55,7 @@
 
 #job .logo img
 {
-  height: 200px;
+  width: 300px;
   clear: both;
   float: left;
 }
