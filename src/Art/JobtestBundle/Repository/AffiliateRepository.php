@@ -24,7 +24,7 @@ class AffiliateRepository extends \Doctrine\ORM\EntityRepository
         try {
             $affiliate = $qb->getQuery()->getSingleResult();
         } catch (NoResultException $e){
-
+            $affiliate = null;
         }
 
         return $affiliate;
