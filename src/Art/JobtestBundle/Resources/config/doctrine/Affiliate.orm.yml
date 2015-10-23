@@ -1,6 +1,7 @@
 Art\JobtestBundle\Entity\Affiliate:
     type: entity
     table: affiliate
+    repositoryClass: Art\JobtestBundle\Repository\AffiliateRepository
     id:
         id:
             type: integer

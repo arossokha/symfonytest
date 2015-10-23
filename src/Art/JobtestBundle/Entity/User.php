@@ -104,4 +104,3 @@ class User implements UserInterface
         return $user->getUsername() == $this->getUsername();
     }
 }
-
