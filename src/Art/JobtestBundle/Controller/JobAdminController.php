@@ -3,7 +3,9 @@
 namespace Art\JobtestBundle\Controller;
 
 use Sonata\AdminBundle\Controller\CRUDController as Controller;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
 
 class JobAdminController extends Controller
 {

@@ -237,4 +237,22 @@ class Affiliate
             $this->token = $token;
         }
     }
+
+    public function activate()
+    {
+        if(!$this->getIsActive()) {
+            $this->setIsActive(true);
+        }
+
+        return $this->is_active;
+    }
+
+    public function deactivate()
+    {
+        if($this->getIsActive()) {
+            $this->setIsActive(false);
+        }
+
+        return $this->is_active;
+    }
 }

@@ -19,3 +19,12 @@ services:
             - ~
             - Art\JobtestBundle\Entity\Job
             - 'ArtJobtestBundle:JobAdmin'
+
+    art.jobtest.admin.affiliate:
+        class: Art\JobtestBundle\Admin\AffiliateAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: jobtest, label: Affiliates }
+        arguments:
+            - ~
+            - Art\JobtestBundle\Entity\Affiliate
+            - 'ArtJobtestBundle:AffiliateAdmin'
