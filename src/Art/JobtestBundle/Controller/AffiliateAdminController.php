@@ -24,6 +24,8 @@ class AffiliateAdminController extends Controller
             foreach($selectedModels as $selectedModel) {
                 $selectedModel->activate();
                 $modelManager->update($selectedModel);
+
+                $this->sendTokenEmail($selectedModel->getEmail(),$selectedModel->getToken());
             }
         } catch(Exception $e) {
             $this->get('session')->getFlashBag()->add('sonata_flash_error', $e->getMessage());
@@ -75,6 +77,8 @@ class AffiliateAdminController extends Controller
         try {
             $affiliate->setIsActive(true);
             $em->flush();
+
+            $this->sendTokenEmail($affiliate->getEmail(),$affiliate->getToken());
         } catch(Exception $e) {
             $this->get('session')->getFlashBag()->add('sonata_flash_error', $e->getMessage());
 
@@ -104,5 +108,18 @@ class AffiliateAdminController extends Controller
         }
 
         return new RedirectResponse($this->admin->generateUrl('list',$this->admin->getFilterParameters()));
+    }
+
+    private function sendTokenEmail($email,$token)
+    {
+        $message = \Swift_Message::newInstance()
+            ->setSubject('Jobtest affiliate token')
+            ->setFrom('pokemom4ik2008@gmail.com')
+            ->setTo($email)
+            ->setBody(
+                $this->renderView('ArtJobtestBundle:Affiliate:email.txt.twig', ['affiliate' => $token]))
+        ;
+
+        return $this->get('mailer')->send($message);
     }
 }
