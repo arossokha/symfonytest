@@ -27,3 +27,13 @@ Art\JobtestBundle\Entity\Category:
     properties:
         name:
             - NotBlank: ~
+
+Art\JobtestBundle\Entity\Affiliate:
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: email
+    properties:
+        url:
+            - Url: ~
+        email:
+            - NotBlank: ~
+            - Email: ~

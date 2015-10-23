@@ -2,6 +2,7 @@
 
 namespace Art\JobtestBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
 /**
  * Affiliate
  */

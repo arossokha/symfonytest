@@ -1,3 +1,7 @@
+art_jobtest_affiliate:
+    resource: "@ArtJobtestBundle/Resources/config/routing/affiliate.yml"
+    prefix:   /affiliate
+
 art_jobtest_job:
     resource: "@ArtJobtestBundle/Resources/config/routing/job.yml"
     prefix:   /job

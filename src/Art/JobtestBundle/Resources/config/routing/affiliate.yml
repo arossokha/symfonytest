@@ -1,0 +1,34 @@
+affiliate:
+    path:     /
+    defaults: { _controller: "ArtJobtestBundle:Affiliate:index" }
+
+affiliate_show:
+    path:     /{id}/show
+    defaults: { _controller: "ArtJobtestBundle:Affiliate:show" }
+
+affiliate_new:
+    path:     /new
+    defaults: { _controller: "ArtJobtestBundle:Affiliate:new" }
+
+affiliate_create:
+    path:     /create
+    defaults: { _controller: "ArtJobtestBundle:Affiliate:create" }
+    methods:  POST
+
+affiliate_edit:
+    path:     /{id}/edit
+    defaults: { _controller: "ArtJobtestBundle:Affiliate:edit" }
+
+affiliate_update:
+    path:     /{id}/update
+    defaults: { _controller: "ArtJobtestBundle:Affiliate:update" }
+    methods:  [POST, PUT]
+
+affiliate_delete:
+    path:     /{id}/delete
+    defaults: { _controller: "ArtJobtestBundle:Affiliate:delete" }
+    methods:  [POST, DELETE]
+
+affiliate_wait:
+    path:     /wait
+    defaults: { _controller: "ArtJobtestBundle:Affiliate:wait" }
