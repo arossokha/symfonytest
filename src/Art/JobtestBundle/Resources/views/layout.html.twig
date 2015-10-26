@@ -3,63 +3,60 @@
 <head>
     <title>
         {% block title %}
-            Jobeet - Your best job board
+            {% trans %}Jobtest - Your best job board{% endtrans %}
         {% endblock %}
     </title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     {% block stylesheets %}
-        <link rel="stylesheet" href="{{ asset('bundles/artjobtest/css/main.css') }}" type="text/css" media="all"/>
+        <link rel="stylesheet" href="{{ asset('bundles/artjobtest/css/main.css') }}" type="text/css" media="all" />
+        <link rel="alternate" type="application/atom+xml" title="Latest Jobs" href="{{ url('job', {'_format': 'atom'}) }}" />
     {% endblock %}
-    <link rel="alternate" type="application/atom+xml" title="Latest Jobs" href="{{ url('job', {'_format': 'atom'}) }}"/>
     {% block javascripts %}
+        <script type="text/javascript" src="{{ asset('bundles/artjobtest/js/jquery-2.1.4.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('bundles/artjobtest/js/search.js') }}"></script>
     {% endblock %}
-    <link rel="shortcut icon" href="{{ asset('bundles/artjobtest/images/favicon.ico') }}"/>
+    <link rel="shortcut icon" href="{{ asset('bundles/artjobtest/images/favicon.ico') }}" />
 </head>
 <body>
 <div id="container">
     <div id="header">
         <div class="content">
             <h1><a href="{{ path('art_jobtest_homepage') }}">
-                    <img src="{{ asset('bundles/artjobtest/images/logo.jpg') }}" alt="Jobeet Job Board"/>
+                    <img alt="Jobeet Job Board" src="{{ asset('bundles/artjobtest/images/logo.jpg') }}" />
                 </a></h1>
 
             <div id="sub_header">
                 <div class="post">
-                    <h2>Ask for people</h2>
-
+                    <h2>{% trans %}Ask for people{% endtrans %}</h2>
                     <div>
-                        <a href="{{ path('job_new') }}">Post a Job</a>
+                        <a href="{{ path('job_new') }}">{% trans %}Post a Job{% endtrans %}</a>
                     </div>
                 </div>
 
                 <div class="search">
-                    <h2>Ask for a job</h2>
-
+                    <h2>{% trans %}Ask for a job{% endtrans %}</h2>
                     <form action="{{ path('job_search') }}" method="get">
                         <input type="text" name="query" value="{{ app.request.get('query') }}" id="search_keywords" />
-                        <input type="submit" value="search"/>
-
+                        <input type="submit" value="search" />
+                        <img id="loader" src="{{ asset('bundles/artjobtest/images/loader.gif') }}" style="vertical-align: middle; display: none" />
                         <div class="help">
-                            Enter some keywords (city, country, position, ...)
+                            {% trans %}Enter some keywords (city, country, position, ...){% endtrans %}
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-
     <div id="job_history">
-        Recent viewed jobs:
+        {% trans %}Recent viewed jobs:{% endtrans %}
         <ul>
             {% for job in app.session.get('job_history') %}
                 <li>
-                    <a href="{{ path('art_job_show', { 'id': job.id, 'company': job.companyslug, 'location': job.locationslug, 'position': job.positionslug }) }}">{{ job.position }}
-                        - {{ job.company }}</a>
+                    <a href="{{ path('art_job_show', { 'id': job.id, 'company': job.companyslug, 'location': job.locationslug, 'position': job.positionslug }) }}">{{ job.position }} - {{ job.company }}</a>
                 </li>
             {% endfor %}
         </ul>
     </div>
-
     <div id="content">
         {% for flashMessage in app.session.flashbag.get('notice') %}
             <div class="flash_notice">
@@ -82,17 +79,25 @@
     <div id="footer">
         <div class="content">
                    <span class="symfony">
-                       <img src="{{ asset('bundles/artjobtest/images/jobeet-mini.png') }}"/>
+                       <img src="{{ asset('bundles/artjobtest/images/jobeet-mini.png') }}" />
                            powered by <a href="http://www.symfony.com/">
-                           <img src="{{ asset('bundles/artjobtest/images/symfony.gif') }}" alt="symfony framework"/>
+                           <img src="{{ asset('bundles/artjobtest/images/symfony.gif') }}" alt="symfony framework" />
                        </a>
                    </span>
             <ul>
-                <li><a href="">About Jobeet</a></li>
-                <li class="feed"><a href="{{ path('job', {'_format': 'atom'}) }}">Full feed</a></li>
-                <li><a href="">Jobtest API</a></li>
-                <li class="last"><a href="{{ path('affiliate_new') }}">Become an affiliate</a></li>
+                <li><a href="">{% trans %}About Jobeet{% endtrans %}</a></li>
+                <li class="feed"><a href="{{ path('job', {'_format': 'atom'}) }}">{% trans %}Full feed{% endtrans %}</a></li>
+                <li><a href="">{% trans %}Jobeet API{% endtrans %}</a></li>
+                <li class="last"><a href="{{ path('affiliate_new') }}">{% trans %}Become an affiliate{% endtrans %}</a></li>
             </ul>
+            <form action="{{ path('art_jobtest_change_language') }}" method="get">
+                <label>{% trans %}Language{% endtrans %}</label>
+                <select name="language">
+                    <option value="en" {% if app.request.get('_locale') == 'en' %}selected="selected"{% endif %}>English</option>
+                    <option value="fr" {% if app.request.get('_locale') == 'fr' %}selected="selected"{% endif %}>French</option>
+                </select>
+                <input type="submit" value="Ok">
+            </form>
         </div>
     </div>
 </div>

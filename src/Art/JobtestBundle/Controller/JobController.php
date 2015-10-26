@@ -4,6 +4,7 @@ namespace Art\JobtestBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Response;
 
 use Art\JobtestBundle\Entity\Job;
 use Art\JobtestBundle\Form\JobType;
@@ -19,8 +20,12 @@ class JobController extends Controller
      * Lists all Job entities.
      *
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
+        if ($request->get('_route') == 'art_jobtest_homepage_noloc') {
+            return $this->redirect($this->generateUrl('art_jobtest_homepage'));
+        }
+
         $em = $this->getDoctrine()->getManager();
 
         $categories = $em->getRepository('ArtJobtestBundle:Category')->getWithJobs();
@@ -28,8 +33,6 @@ class JobController extends Controller
         foreach ($categories as $category) {
             $category->setActiveJobs($em->getRepository('ArtJobtestBundle:Job')
                 ->getActiveJobs($category->getId(),
-                    // 10
-                    // add limit from params
                     $this->container->getParameter('max_jobs_on_homepage')
                 ));
 
@@ -39,19 +42,19 @@ class JobController extends Controller
 
         $latestJob = $em->getRepository('ArtJobtestBundle:Job')->getLatestPost();
 
-        if($latestJob) {
+        if ($latestJob) {
             $lastUpdated = $latestJob->getCreatedAt()->format(DATE_ATOM);
         } else {
             $lastUpdated = new \DateTime();
             $lastUpdated = $lastUpdated->format(DATE_ATOM);
         }
 
-        $format = $this->getRequest()->getRequestFormat();
+        $format = $request->getRequestFormat();
 
-        return $this->render('ArtJobtestBundle:Job:index.'.$format.'.twig', array(
+        return $this->render('ArtJobtestBundle:Job:index.' . $format . '.twig', array(
             'categories' => $categories,
             'lastUpdated' => $lastUpdated,
-            'feedId' => sha1($this->get('router')->generate('job',['_format' => 'atom'],true)),
+            'feedId' => sha1($this->get('router')->generate('job', ['_format' => 'atom'], true)),
         ));
     }
 
@@ -123,7 +126,7 @@ class JobController extends Controller
      * Finds and displays a Job entity.
      *
      */
-    public function showAction($id)
+    public function showAction(Request $request,$id)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -133,7 +136,7 @@ class JobController extends Controller
             throw $this->createNotFoundException('Unable to find Job entity.');
         }
 
-        $session = $this->getRequest()->getSession();
+        $session = $request->getSession();
 
         // fetch jobs already stored in the job history
         $jobs = $session->get('job_history', array());
@@ -385,13 +388,22 @@ class JobController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $query = $request->get('query');
-
-        if(!$query) {
-            return $this->redirect($this->generateUrl('art_jobtest_homepage'));
+        $isAjaxRequest = $request->isXmlHttpRequest();
+        if (!$query) {
+            if ($isAjaxRequest) {
+                return new Response();
+            } else {
+                return $this->redirect($this->generateUrl('art_jobtest_homepage'));
+            }
         }
 
         $jobs = $em->getRepository('ArtJobtestBundle:Job')->getForLuceneQuery($query);
-
+        if ($isAjaxRequest) {
+            if ('*' == $query || !$jobs || $query == '') {
+                return new Response('No results.');
+            }
+            return $this->render('ArtJobtestBundle:Job:list.html.twig', ['jobs' => $jobs]);
+        }
         return $this->render('ArtJobtestBundle:Job:search.html.twig', ['jobs' => $jobs]);
     }
 }

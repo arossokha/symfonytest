@@ -132,7 +132,7 @@ class JobRepository extends EntityRepository
         }
 
         if (empty($pks)) {
-            return array();
+            return [];
         }
 
         $q = $this->createQueryBuilder('j')

@@ -35,5 +35,5 @@ Art\JobtestBundle\Entity\Affiliate:
         url:
             - Url: ~
         email:
-            - NotBlank: ~
             - Email: ~
+            - NotBlank: ~

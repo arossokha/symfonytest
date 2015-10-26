@@ -2,97 +2,49 @@
 
 namespace Art\JobtestBundle\Tests\Controller;
 
-use Art\JobtestBundle\DataFixtures\ORM\LoadAffiliateData;
-use Art\JobtestBundle\DataFixtures\ORM\LoadCategoryData;
-use Art\JobtestBundle\DataFixtures\ORM\LoadJobData;
-use Art\JobtestBundle\DataFixtures\ORM\LoadUserData;
-use Doctrine\Bundle\DoctrineBundle\Command\CreateDatabaseDoctrineCommand;
-use Doctrine\Bundle\DoctrineBundle\Command\DropDatabaseDoctrineCommand;
-use Doctrine\Bundle\DoctrineBundle\Command\Proxy\CreateSchemaDoctrineCommand;
-use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
-use Doctrine\Common\DataFixtures\Loader;
-use Doctrine\Common\DataFixtures\Purger\ORMPurger;
-//use Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\NullOutput;
+use Art\JobtestBundle\Tests\WebTestCase;
 
 class AffiliateControllerTest extends WebTestCase
 {
-    public function setUp()
+    public function testAffiliateForm()
     {
-        static::$kernel = static::createKernel();
-        static::$kernel->boot();
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/en/affiliate/new');
 
-        $this->application = new Application(static::$kernel);
+        $this->assertEquals('Art\JobtestBundle\Controller\AffiliateController::newAction', $client->getRequest()->attributes->get('_controller'));
 
-        // drop the database
-        $command = new DropDatabaseDoctrineCommand();
-        $this->application->add($command);
-        $input = new ArrayInput([
-            'command' => 'doctrine:database:drop',
-            '--force' => true
-        ]);
-        $command->run($input, new NullOutput());
+        $form = $crawler->selectButton('Create')->form(array(
+            'art_jobtestbundle_affiliate[url]'   => 'http://sensio-labs.com/',
+            'art_jobtestbundle_affiliate[email]' => 'fabien.potencier@example.com'
+        ));
 
-        // we have to close the connection after dropping the database so we don't get "No database selected" error
-        $connection = $this->application->getKernel()->getContainer()->get('doctrine')->getConnection();
-        if ($connection->isConnected()) {
-            $connection->close();
-        }
+        $client->submit($form);
+        $this->assertEquals('Art\JobtestBundle\Controller\AffiliateController::createAction', $client->getRequest()->attributes->get('_controller'));
 
-        // create the database
-        $command = new CreateDatabaseDoctrineCommand();
-        $this->application->add($command);
-        $input = new ArrayInput([
-            'command' => 'doctrine:database:create',
-        ]);
-        $command->run($input, new NullOutput());
+        $kernel = static::createKernel();
+        $kernel->boot();
+        $em = $kernel->getContainer()->get('doctrine.orm.entity_manager');
 
-        // create schema
-        $command = new CreateSchemaDoctrineCommand();
-        $this->application->add($command);
-        $input = new ArrayInput([
-            'command' => 'doctrine:schema:create',
-        ]);
-        $command->run($input, new NullOutput());
+        $crawler = $client->request('GET', '/en/affiliate/new');
+        $form = $crawler->selectButton('Create')->form(array(
+            'art_jobtestbundle_affiliate[email]'        => 'not.an.email',
+        ));
+        $crawler = $client->submit($form);
 
-        // get the Entity Manager
-        $this->em = static::$kernel->getContainer()
-            ->get('doctrine')
-            ->getManager();
-
-        // load fixtures
-        // not work
-//        $client = static::createClient();
-//        $loader = new ContainerAwareLoader($client->getContainer());
-//        $loader->loadFromDirectory(static::$kernel->locateResource('@Art\JobtestBundle\DataFixtures\ORM'));
-//
-//        $purger = new ORMPurger($this->em);
-//        $executor = new ORMExecutor($this->em, $purger);
-//        $executor->execute($loader->getFixtures());
-
-        $loader = new Loader();
-        $loader->addFixture(new LoadCategoryData());
-        $loader->addFixture(new LoadJobData());
-        $loader->addFixture(new LoadAffiliateData());
-
-        $purger = new ORMPurger($this->em);
-        $executor = new ORMExecutor($this->em, $purger);
-        $executor->execute($loader->getFixtures());
-
-        parent::setUp();
+        // check if we have 1 errors
+        $this->assertTrue($crawler->filter('.error_list')->count() == 1);
+        // check if we have error on affiliate_email field
+        $this->assertTrue($crawler->filter('#affiliate_email')->siblings()->first()->filter('.error_list')->count() == 1);
     }
 
     public function testCreate()
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/affiliate/new');
-        $form = $crawler->selectButton('Create')->form([
-            'art_jobtestbundle_affiliate[url]' => 'http://sensio-labs.com/',
+        $crawler = $client->request('GET', '/en/affiliate/new');
+        $form = $crawler->selectButton('Create')->form(array(
+            'art_jobtestbundle_affiliate[url]'   => 'http://sensio-labs.com/',
             'art_jobtestbundle_affiliate[email]' => 'address@example.com'
-        ]);
+        ));
 
         $client->submit($form);
         $client->followRedirect();
@@ -105,7 +57,7 @@ class AffiliateControllerTest extends WebTestCase
     public function testWait()
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/affiliate/wait');
+        $crawler = $client->request('GET', '/en/affiliate/wait');
 
         $this->assertEquals('Art\JobtestBundle\Controller\AffiliateController::waitAction', $client->getRequest()->attributes->get('_controller'));
     }

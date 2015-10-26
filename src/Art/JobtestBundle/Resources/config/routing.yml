@@ -1,18 +1,3 @@
-art_jobtest_affiliate:
-    resource: "@ArtJobtestBundle/Resources/config/routing/affiliate.yml"
-    prefix:   /affiliate
-
-art_jobtest_job:
-    resource: "@ArtJobtestBundle/Resources/config/routing/job.yml"
-    prefix:   /job
-
-art_jobtest_homepage:
-    defaults: { _controller: ArtJobtestBundle:Job:index }
-    pattern : /
-
-art_jobtest_category:
-    pattern : /category/{slug}/{page}
-    defaults: { _controller: ArtJobtestBundle:Category:show, page: 1}
 login:
     pattern:   /login
     defaults:  { _controller: ArtJobtestBundle:Default:login }
@@ -20,8 +5,41 @@ login_check:
     pattern:   /login_check
 logout:
     pattern:   /logout
+
+art_jobtest_affiliate:
+    resource: "@ArtJobtestBundle/Resources/config/routing/affiliate.yml"
+    prefix:   /{_locale}/affiliate
+    requirements:
+          _locale: en|fr
+
+art_jobtest_job:
+    resource: "@ArtJobtestBundle/Resources/config/routing/job.yml"
+    prefix:   /{_locale}/job
+    requirements:
+         _locale: en|fr
+
+art_jobtest_homepage_noloc:
+    defaults: { _controller: ArtJobtestBundle:Job:index }
+    pattern : /
+
+art_jobtest_homepage:
+    defaults: { _controller: ArtJobtestBundle:Job:index }
+    pattern : /{_locale}/
+    requirements:
+         _locale: en|fr
+
+art_jobtest_category:
+    pattern : /{_locale}/category/{slug}/{page}
+    defaults: { _controller: ArtJobtestBundle:Category:show, page: 1}
+    requirements:
+         _locale: en|fr
+
 art_jobtest_api:
     pattern: /api/{token}/jobs.{_format}
     defaults: {_controller: ArtJobtestBundle:Api:list}
     requirements:
         _format: xml|json|yaml
+
+art_jobtest_change_language:
+    pattern: /change_language
+    defaults: { _controller: "ArtJobtestBundle:Default:changeLanguage" }

@@ -1,7 +1,7 @@
 {% extends 'ArtJobtestBundle::layout.html.twig' %}
 
 {% block title %}
-    Jobs in the {{ category.name }} category
+    {% trans with {'%category%': category.name} %}Jobs in the %category% category{% endtrans %}
 {% endblock %}
 
 {% block stylesheets %}

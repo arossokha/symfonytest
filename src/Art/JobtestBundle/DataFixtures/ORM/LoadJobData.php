@@ -55,7 +55,7 @@ class LoadJobData extends AbstractFixture implements OrderedFixtureInterface
         $job_expired->setDescription('Lorem ipsum dolor sit amet, consectetur adipisicing elit.');
         $job_expired->setHowToApply('Send your resume to lorem.ipsum [at] dolor.sit');
         $job_expired->setIsPublic(true);
-        $job_expired->setIsActivated(true);
+        $job_expired->setIsActivated(false);
         $job_expired->setToken('job_expired');
         $job_expired->setEmail('job@example.com');
         $job_expired->setCreatedAt(new \DateTime('2005-12-01'));
