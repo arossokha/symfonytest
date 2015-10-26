@@ -54,3 +54,7 @@ job_extend:
     methods : [POST]
     requirements:
         token: \w+
+
+job_search:
+    pattern:  /search
+    defaults: { _controller: "ArtJobtestBundle:Job:search" }

@@ -380,4 +380,22 @@ class JobController extends Controller
             ->add('token', 'hidden')
             ->getForm();
     }
+
+    public function searchAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $query = $request->get('query');
+
+        if(!$query) {
+            return $this->redirect($this->generateUrl('art_jobtest_homepage'));
+        }
+
+        /**
+         * @todo create simple mysql search because have problem with install zend framework throw composer on windows
+         */
+//        $jobs = $em->getRepository('ArtJobtestBundle:Job')->getForLuceneQuery($query);
+        $jobs = $em->getRepository('ArtJobtestBundle:Job')->getForSearchQuery($query);
+
+        return $this->render('ArtJobtestBundle:Job:search.html.twig', array('jobs' => $jobs));
+    }
 }

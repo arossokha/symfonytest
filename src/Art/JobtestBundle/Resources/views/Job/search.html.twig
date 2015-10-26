@@ -1,0 +1,13 @@
+{% extends 'ArtJobtestBundle::layout.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('bundles/art/jobtest/css/jobs.css') }}" type="text/css" media="all" />
+{% endblock %}
+
+{% block content %}
+    <h1>Search results for ...</h1>
+    <div id="jobs">
+        {% include 'ArtJobtestBundle:Job:list.html.twig' with {'jobs': jobs} %}
+    </div>
+{% endblock %}

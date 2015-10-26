@@ -7,6 +7,12 @@
             "": "src/"
         }
     },
+    "repositories": [
+      {
+        "type": "composer",
+        "url": "https://packages.zendframework.com/"
+      }
+    ],
     "require": {
         "php": ">=5.3.9",
         "symfony/symfony": "2.7.*",
@@ -21,7 +27,8 @@
         "doctrine/doctrine-fixtures-bundle": "dev-master",
         "doctrine/data-fixtures": "dev-master",
         "sonata-project/admin-bundle": "^2.3",
-        "sonata-project/doctrine-orm-admin-bundle": "^2.3"
+        "sonata-project/doctrine-orm-admin-bundle": "^2.3",
+        "zendframework/zendframework": "2.*"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"
