@@ -390,12 +390,8 @@ class JobController extends Controller
             return $this->redirect($this->generateUrl('art_jobtest_homepage'));
         }
 
-        /**
-         * @todo create simple mysql search because have problem with install zend framework throw composer on windows
-         */
-//        $jobs = $em->getRepository('ArtJobtestBundle:Job')->getForLuceneQuery($query);
-        $jobs = $em->getRepository('ArtJobtestBundle:Job')->getForSearchQuery($query);
+        $jobs = $em->getRepository('ArtJobtestBundle:Job')->getForLuceneQuery($query);
 
-        return $this->render('ArtJobtestBundle:Job:search.html.twig', array('jobs' => $jobs));
+        return $this->render('ArtJobtestBundle:Job:search.html.twig', ['jobs' => $jobs]);
     }
 }

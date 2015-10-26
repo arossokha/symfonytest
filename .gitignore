@@ -9,6 +9,7 @@
 /composer.phar
 /vendor/
 /web/bundles/
+/web/data/
 /code_docs/
 
 .idea/*

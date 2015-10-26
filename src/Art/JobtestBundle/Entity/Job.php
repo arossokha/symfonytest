@@ -1,9 +1,13 @@
 <?php
 
 namespace Art\JobtestBundle\Entity;
+
 use Art\JobtestBundle\Utils\Jobtest;
 
 use Doctrine\ORM\Mapping as ORM;
+use ZendSearch\Lucene\Document;
+use ZendSearch\Lucene\Lucene;
+
 /**
  * Job
  */
@@ -431,7 +435,7 @@ class Job
     // public function setCreatedAt($createdAt)
     public function setCreatedAt()
     {
-        if(!$this->getCreatedAt()) {
+        if (!$this->getCreatedAt()) {
             $this->created_at = new \DateTime();
         }
 
@@ -496,12 +500,13 @@ class Job
     {
         return $this->category;
     }
+
     /**
      * @ORM\PrePersist
      */
     public function setCreatedAtValue()
     {
-        if(!$this->getCreatedAt()) {
+        if (!$this->getCreatedAt()) {
             $this->setCreatedAt();
         }
     }
@@ -518,12 +523,12 @@ class Job
     {
         return Jobtest::slugify($this->getCompany());
     }
- 
+
     public function getPositionSlug()
     {
         return Jobtest::slugify($this->getPosition());
     }
- 
+
     public function getLocationSlug()
     {
         return Jobtest::slugify($this->getLocation());
@@ -534,7 +539,7 @@ class Job
      */
     public function setExpiresAtValue()
     {
-        if(!$this->getExpiresAt()) {
+        if (!$this->getExpiresAt()) {
             $now = $this->getCreatedAt() ? $this->getCreatedAt()->format('U') : time();
             $this->expires_at = new \DateTime(date('Y-m-d H:i:s', $now + 86400 * 30));
         }
@@ -544,7 +549,7 @@ class Job
     {
         return array('full-time' => 'Full time', 'part-time' => 'Part time', 'freelance' => 'Freelance');
     }
- 
+
     public static function getTypeValues()
     {
         return array_keys(self::getTypes());
@@ -554,24 +559,24 @@ class Job
     {
         return 'uploads/jobs';
     }
- 
+
     protected function getUploadRootDir()
     {
         /**
          * @todo : this is fail to use path in such way
          * find better way to get web folder path
          */
-        return __DIR__.'/../../../../web/'.$this->getUploadDir();
+        return __DIR__ . '/../../../../web/' . $this->getUploadDir();
     }
- 
+
     public function getWebPath()
     {
-        return null === $this->logo ? null : $this->getUploadDir().'/'.$this->logo;
+        return null === $this->logo ? null : $this->getUploadDir() . '/' . $this->logo;
     }
- 
+
     public function getAbsolutePath()
     {
-        return null === $this->logo ? null : $this->getUploadRootDir().'/'.$this->logo;
+        return null === $this->logo ? null : $this->getUploadRootDir() . '/' . $this->logo;
     }
 
     /**
@@ -597,7 +602,7 @@ class Job
     public function removeUpload()
     {
         $file = $this->getAbsolutePath();
-        if(file_exists($file) && is_writable($file)) {
+        if (file_exists($file) && is_writable($file)) {
             @unlink($file);
         }
     }
@@ -608,7 +613,7 @@ class Job
     public function preUpload()
     {
         if (null !== $this->file) {
-            $this->logo = uniqid().'.'.$this->file->guessExtension();
+            $this->logo = uniqid() . '.' . $this->file->guessExtension();
         }
     }
 
@@ -617,8 +622,8 @@ class Job
      */
     public function setTokenValue()
     {
-        if(!$this->getToken()) {
-            $this->token = sha1($this->getEmail().rand(11111, 99999));
+        if (!$this->getToken()) {
+            $this->token = sha1($this->getEmail() . rand(11111, 99999));
         }
     }
 
@@ -626,12 +631,12 @@ class Job
     {
         return $this->getDaysBeforeExpires() < 0;
     }
- 
+
     public function expiresSoon()
     {
         return $this->getDaysBeforeExpires() < 5;
     }
- 
+
     public function getDaysBeforeExpires()
     {
         return ceil(($this->getExpiresAt()->format('U') - time()) / 86400);
@@ -644,11 +649,11 @@ class Job
 
     public function extend()
     {
-        if(!$this->expiresSoon()) {
+        if (!$this->expiresSoon()) {
             return false;
         }
 
-        $this->expires_at = new \DateTime(date('Y-m-d H:i:s',time() + 86400*30 ));
+        $this->expires_at = new \DateTime(date('Y-m-d H:i:s', time() + 86400 * 30));
 
         return true;
     }
@@ -656,17 +661,76 @@ class Job
     public function asArray($host)
     {
         return array(
-            'category'     => $this->getCategory()->getName(),
-            'type'         => $this->getType(),
-            'company'      => $this->getCompany(),
-            'logo'         => $this->getLogo() ? 'http://' . $host . '/uploads/jobs/' . $this->getLogo() : null,
-            'url'          => $this->getUrl(),
-            'position'     => $this->getPosition(),
-            'location'     => $this->getLocation(),
-            'description'  => $this->getDescription(),
+            'category' => $this->getCategory()->getName(),
+            'type' => $this->getType(),
+            'company' => $this->getCompany(),
+            'logo' => $this->getLogo() ? 'http://' . $host . '/uploads/jobs/' . $this->getLogo() : null,
+            'url' => $this->getUrl(),
+            'position' => $this->getPosition(),
+            'location' => $this->getLocation(),
+            'description' => $this->getDescription(),
             'how_to_apply' => $this->getHowToApply(),
-            'expires_at'   => $this->getCreatedAt()->format('Y-m-d H:i:s'),
+            'expires_at' => $this->getCreatedAt()->format('Y-m-d H:i:s'),
         );
     }
- 
+
+    static public function getLuceneIndex()
+    {
+        if (file_exists($index = self::getLuceneIndexFile())) {
+            return Lucene::open($index);
+        }
+
+        return Lucene::create($index);
+    }
+
+    static public function getLuceneIndexFile()
+    {
+        return getcwd().'/data/job.index';
+        return __DIR__ . '/../../../../web/data/job.index';
+    }
+
+    /**
+     * @ORM\PostPersist
+     */
+    public function updateLuceneIndex()
+    {
+        $index = self::getLuceneIndex();
+
+        // remove existing entries
+        foreach ($index->find('pk:' . $this->getId()) as $hit) {
+            $index->delete($hit->id);
+        }
+
+        // don't index expired and non-activated jobs
+        if ($this->isExpired() || !$this->getIsActivated()) {
+            return;
+        }
+
+        $doc = new Document();
+
+        // store job primary key to identify it in the search results
+        $doc->addField(Document\Field::Keyword('pk', $this->getId()));
+
+        // index job fields
+        $doc->addField(Document\Field::UnStored('position', $this->getPosition(), 'utf-8'));
+        $doc->addField(Document\Field::UnStored('company', $this->getCompany(), 'utf-8'));
+        $doc->addField(Document\Field::UnStored('location', $this->getLocation(), 'utf-8'));
+        $doc->addField(Document\Field::UnStored('description', $this->getDescription(), 'utf-8'));
+
+        // add job to the index
+        $index->addDocument($doc);
+        $index->commit();
+    }
+
+    /**
+     * @ORM\PostRemove
+     */
+    public function deleteLuceneIndex()
+    {
+        $index = self::getLuceneIndex();
+
+        foreach ($index->find('pk:' . $this->getId()) as $hit) {
+            $index->delete($hit->id);
+        }
+    }
 }

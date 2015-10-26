@@ -28,8 +28,10 @@
         "doctrine/data-fixtures": "dev-master",
         "sonata-project/admin-bundle": "^2.3",
         "sonata-project/doctrine-orm-admin-bundle": "^2.3",
-        "zendframework/zendframework": "2.*"
+        "zendframework/zendframework": "2.*",
+        "zendframework/zendsearch": "dev-master"
     },
+    "minimum-stability" : "dev",
     "require-dev": {
         "sensio/generator-bundle": "~2.3"
     },

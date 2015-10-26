@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "2c8567058b9a7f286e7a527851286fa5",
-    "content-hash": "a1bd4e538ddc93dfc47866155c67a995",
+    "hash": "f04c4825e144135d4cd8d4d84223d52d",
+    "content-hash": "ed5a4267ef0ddc8d017e180090648fb3",
     "packages": [
         {
             "name": "cocur/slugify",
@@ -6364,6 +6364,42 @@
             "time": "2015-08-03 15:13:58"
         },
         {
+            "name": "zendframework/zendsearch",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zendframework/ZendSearch.git",
+                "reference": "c8de2508d3413bf9d701b40c1092c1ffbdd8fc63"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zendframework/ZendSearch/zipball/c8de2508d3413bf9d701b40c1092c1ffbdd8fc63",
+                "reference": "c8de2508d3413bf9d701b40c1092c1ffbdd8fc63",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3",
+                "zendframework/zend-stdlib": "2.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "ZendSearch": "library/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "a general purpose text search engine written entirely in PHP 5",
+            "homepage": "http://packages.zendframework.com/",
+            "keywords": [
+                "lucene",
+                "zf2"
+            ],
+            "time": "2015-01-21 16:24:14"
+        },
+        {
             "name": "zendframework/zendxml",
             "version": "1.0.1",
             "source": {
@@ -6415,10 +6451,11 @@
     ],
     "packages-dev": [],
     "aliases": [],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "stability-flags": {
         "doctrine/doctrine-fixtures-bundle": 20,
-        "doctrine/data-fixtures": 20
+        "doctrine/data-fixtures": 20,
+        "zendframework/zendsearch": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

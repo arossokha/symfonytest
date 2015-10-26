@@ -4,6 +4,7 @@ namespace Art\JobtestBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NoResultException;
+use Art\JobtestBundle\Entity\Job;
 
 /**
  * JobRepository
@@ -118,7 +119,6 @@ class JobRepository extends EntityRepository
 
     /**
      * Lucene search with zend framework
-     * @todo: NOT TESTED fix problem with zend framework
      * @param $query
      * @return array
      */
