@@ -6,7 +6,8 @@ framework:
     session:
         storage_id: session.storage.mock_file
     profiler:
-        collect: false
+        enabled: true
+#        collect: false # commented because swift mailer test won't work
 
 web_profiler:
     toolbar: false

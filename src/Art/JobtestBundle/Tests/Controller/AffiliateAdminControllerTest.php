@@ -18,7 +18,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 
-class AffiliateControllerTest extends WebTestCase
+class AffiliateAdminControllerTest extends WebTestCase
 {
     public function setUp()
     {
@@ -77,6 +77,9 @@ class AffiliateControllerTest extends WebTestCase
         $loader->addFixture(new LoadCategoryData());
         $loader->addFixture(new LoadJobData());
         $loader->addFixture(new LoadAffiliateData());
+        $userFixture = new LoadUserData();
+        $userFixture->setContainer(static::$kernel->getContainer());
+        $loader->addFixture($userFixture);
 
         $purger = new ORMPurger($this->em);
         $executor = new ORMExecutor($this->em, $purger);
@@ -85,28 +88,46 @@ class AffiliateControllerTest extends WebTestCase
         parent::setUp();
     }
 
-    public function testCreate()
+    public function testActivate()
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/affiliate/new');
-        $form = $crawler->selectButton('Create')->form([
-            'art_jobtestbundle_affiliate[url]' => 'http://sensio-labs.com/',
-            'art_jobtestbundle_affiliate[email]' => 'address@example.com'
-        ]);
 
-        $client->submit($form);
-        $client->followRedirect();
+        // Enable the profiler for the next request (it does nothing if the profiler is not available)
+        $client->enableProfiler();
+        $crawler = $client->request('GET', '/login');
 
-        $this->assertEquals('Art\JobtestBundle\Controller\AffiliateController::waitAction', $client->getRequest()->attributes->get('_controller'));
+        $form = $crawler->selectButton('login')->form(array(
+            '_username'      => 'admin',
+            '_password'      => 'admin'
+        ));
 
-        return $client;
-    }
+        $crawler = $client->submit($form);
+        $crawler = $client->followRedirect();
 
-    public function testWait()
-    {
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/affiliate/wait');
+        $this->assertTrue(200 === $client->getResponse()->getStatusCode());
 
-        $this->assertEquals('Art\JobtestBundle\Controller\AffiliateController::waitAction', $client->getRequest()->attributes->get('_controller'));
+        $crawler = $client->request('GET', '/admin/art/jobtest/affiliate/list');
+
+        $link = $crawler->filter('.btn.edit_link')->link();
+        $client->click($link);
+
+
+        if($profile = $client->getProfile()) {
+            $mailCollector = $profile->getCollector('swiftmailer');
+            // Check that an e-mail was sent
+            $this->assertEquals(1, $mailCollector->getMessageCount());
+
+            $collectedMessages = $mailCollector->getMessages();
+            $message = $collectedMessages[0];
+
+            // Asserting e-mail data
+            $this->assertInstanceOf('Swift_Message', $message);
+            $this->assertEquals('Jobtest affiliate token', $message->getSubject());
+            $this->assertRegExp(
+                '/Your secret token is symfony/',
+                $message->getBody()
+            );
+        }
+
     }
 }

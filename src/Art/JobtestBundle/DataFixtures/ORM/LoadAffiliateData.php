@@ -1,6 +1,4 @@
 <?php
-// namespace IbwJobeetBundleDataFixturesORM;
-// namespace ArtJobtestBundleDataFixturesORM;
 namespace Art\JobtestBundle\DataFixtures\ORM;
 
 use Doctrine\Common\Persistence\ObjectManager;
