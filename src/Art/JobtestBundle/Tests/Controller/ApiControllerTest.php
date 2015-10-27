@@ -1,20 +1,7 @@
 <?php
 namespace Art\JobtestBundle\Tests\Controller;
 
-use Art\JobtestBundle\DataFixtures\ORM\LoadAffiliateData;
-use Art\JobtestBundle\DataFixtures\ORM\LoadCategoryData;
-use Art\JobtestBundle\DataFixtures\ORM\LoadJobData;
-use Doctrine\Bundle\DoctrineBundle\Command\CreateDatabaseDoctrineCommand;
-use Doctrine\Bundle\DoctrineBundle\Command\DropDatabaseDoctrineCommand;
-use Doctrine\Bundle\DoctrineBundle\Command\Proxy\CreateSchemaDoctrineCommand;
-use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
-use Doctrine\Common\DataFixtures\Loader;
-use Doctrine\Common\DataFixtures\Purger\ORMPurger;
-use Symfony\Bridge\Doctrine\DataFixtures\ContainerAwareLoader;
 use Art\JobtestBundle\Tests\WebTestCase;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\NullOutput;
 
 class ApiControllerTest extends WebTestCase
 {
@@ -24,7 +11,7 @@ class ApiControllerTest extends WebTestCase
         $crawler = $client->request('GET', '/api/sensio-labs/jobs.xml');
         $this->assertEquals('Art\JobtestBundle\Controller\ApiController::listAction', $client->getRequest()->attributes->get('_controller'));
 
-        $this->assertTrue($crawler->filter('description')->count() == 33);
+        $this->assertTrue($crawler->filter('description')->count() == 32);
 
         $crawler = $client->request('GET', '/api/sensio-labs87/jobs.xml');
 

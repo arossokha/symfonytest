@@ -11,4 +11,4 @@ code_docs folder added to git ignore
 
 create command for cleanup jobs
 configure cron with 
-* 1 * * * cd [project_path] && php app/console ibw:jobeet:cleanup
+* 1 * * * cd [project_path] && php app/console art:jobtest:cleanup

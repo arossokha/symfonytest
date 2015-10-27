@@ -36,7 +36,7 @@
             </li>
         {% else %}
             <li>
-                [{% trans with {'%url%': '<a href="' ~ url('ibw_job_preview', { 'token': job.token, 'company': job.companyslug, 'location': job.locationslug, 'position': job.positionslug }) ~ '">URL</a>'} %}
+                [{% trans with {'%url%': '<a href="' ~ url('job_preview', { 'token': job.token, 'company': job.companyslug, 'location': job.locationslug, 'position': job.positionslug }) ~ '">URL</a>'} %}
                 Bookmark this %url% to manage this job in the future{% endtrans %}.]
             </li>
         {% endif %}

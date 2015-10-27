@@ -56,7 +56,7 @@ class JobRepository extends EntityRepository
 
         try {
             $job = $query->getSingleResult();
-        } catch (DoctrineOrmNoResultException $e) {
+        } catch (NoResultException $e) {
             $job = null;
         }
 

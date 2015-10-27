@@ -54,6 +54,19 @@ class JobControllerTest extends WebTestCase
         $this->assertTrue(404 === $client->getResponse()->getStatusCode());
     }
 
+    public function getExpiredJob()
+    {
+        $kernel = static::createKernel();
+        $kernel->boot();
+        $em = $kernel->getContainer()->get('doctrine.orm.entity_manager');
+
+        $query = $em->createQuery('SELECT j from ArtJobtestBundle:Job j WHERE j.expires_at < :date');
+        $query->setParameter('date', date('Y-m-d H:i:s', time()));
+        $query->setMaxResults(1);
+
+        return $query->getSingleResult();
+    }
+
     public function testJobForm()
     {
         $client = static::createClient();
@@ -64,7 +77,7 @@ class JobControllerTest extends WebTestCase
         $form = $crawler->selectButton('Preview your job')->form([
             'art_jobtestbundle_job[company]' => 'Sensio Labs',
             'art_jobtestbundle_job[url]' => 'http://www.sensio.com',
-            'art_jobtestbundle_job[file]' => __DIR__ . '/../../../../../web/bundles/ibwjobeet/images/sensio-labs.gif',
+            'art_jobtestbundle_job[file]' => __DIR__ . '/../../../../../web/bundles/artjobtest/images/sensio-labs.gif',
             'art_jobtestbundle_job[how_to_apply]' => 'Send me an email',
             'art_jobtestbundle_job[description]' => 'You will work with symfony to develop websites for our customers',
             'art_jobtestbundle_job[location]' => 'Atlanta, USA',

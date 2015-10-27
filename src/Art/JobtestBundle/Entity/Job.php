@@ -432,10 +432,11 @@ class Job
      *
      * @return Job
      */
-    // public function setCreatedAt($createdAt)
-    public function setCreatedAt()
+     public function setCreatedAt(\DateTime $createdAt = null)
     {
-        if (!$this->getCreatedAt()) {
+        if($createdAt){
+            $this->created_at = $createdAt;
+        } elseif (!$this->getCreatedAt()) {
             $this->created_at = new \DateTime();
         }
 
@@ -459,10 +460,9 @@ class Job
      *
      * @return Job
      */
-    // public function setUpdatedAt($updatedAt)
-    public function setUpdatedAt()
+    public function setUpdatedAt($updatedAt = null)
     {
-        $this->updated_at = new \DateTime();;
+        $this->updated_at = new \DateTime();
 
         return $this;
     }
@@ -562,11 +562,10 @@ class Job
 
     protected function getUploadRootDir()
     {
-        /**
-         * @todo : this is fail to use path in such way
-         * find better way to get web folder path
-         */
-        return __DIR__ . '/../../../../web/' . $this->getUploadDir();
+        if(realpath(__DIR__)){
+            return __DIR__ . '/../../../../web/' . $this->getUploadDir();
+        }
+        return getcwd().'/web/' . $this->getUploadDir();
     }
 
     public function getWebPath()
@@ -685,8 +684,11 @@ class Job
 
     static public function getLuceneIndexFile()
     {
-        return getcwd().'/data/job.index';
-        return __DIR__ . '/../../../../web/data/job.index';
+        // this code need for correct work when run xdebug on windows
+        if(realpath(__DIR__)){
+            return __DIR__ . '/../../../../web/data/job.index';
+        }
+        return getcwd().'/web/data/job.index';
     }
 
     /**

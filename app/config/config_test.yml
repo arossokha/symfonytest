@@ -15,3 +15,10 @@ web_profiler:
 
 swiftmailer:
     disable_delivery: true
+
+parameters:
+    database_host: 127.0.0.1
+    database_port: 3306
+    database_name: jobtestcheck
+    database_user: jobtest
+    database_password: jobtest
